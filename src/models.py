@@ -12,6 +12,73 @@ import math
 from base_models import NeuralNetwork, ParallelNetworks
 
 
+
+# Example usage
+def build_model(conf):
+    if conf.family == "gpt2":
+        model = TransformerModel(
+            n_tokens=conf.n_tokens,  # Added n_tokens to config
+            n_positions=conf.n_positions,
+            n_embd=conf.n_embd,
+            n_layer=conf.n_layer,
+            n_head=conf.n_head,
+        )
+    else:
+        raise NotImplementedError
+
+    return model
+
+
+class TransformerModel(nn.Module):
+    def __init__(self, n_tokens=13, n_positions=128, n_embd=128, n_layer=12, n_head=4):
+        super(TransformerModel, self).__init__()
+        configuration = GPT2Config(
+            n_positions=n_positions,
+            n_embd=n_embd,
+            n_layer=n_layer,
+            n_head=n_head,
+            resid_pdrop=0.0,
+            embd_pdrop=0.0,
+            attn_pdrop=0.0,
+            use_cache=False,
+        )
+        self.name = f"gpt2_embd={n_embd}_layer={n_layer}_head={n_head}"
+
+        self.n_tokens = n_tokens
+        self.n_positions = n_positions
+
+        # Embedding layer for tokens
+        self.token_embeddings = nn.Embedding(n_tokens, n_embd)
+        
+        # GPT-2 backbone
+        self._backbone = GPT2Model(configuration)
+        
+        # Linear layer to map to token logits
+        self._read_out = nn.Linear(n_embd, n_tokens)
+
+    def forward(self, input_tokens):
+        # Get token embeddings
+        embeds = self.token_embeddings(input_tokens)
+        
+        # Pass through GPT-2 backbone
+        output = self._backbone(inputs_embeds=embeds).last_hidden_state
+        
+        # Predict logits for the next token
+        logits = self._read_out(output)
+        
+        # Return logits for each position
+        return logits
+
+
+
+
+
+
+
+
+
+
+'''
 def build_model(conf):
     if conf.family == "gpt2":
         model = TransformerModel(
@@ -662,3 +729,4 @@ class XGBoostModel:
             preds.append(pred)
 
         return torch.stack(preds, dim=1)
+'''
