@@ -6,6 +6,51 @@ import numpy as np
 import numpy as np
 from models import *
 
+
+
+bce_loss = torch.nn.BCELoss()
+def cross_entropy(ys_pred, ys):
+    output = sigmoid(ys_pred)
+    target = (ys + 1) / 2
+    return bce_loss(output, target)
+
+class Task:
+    def __init__(self, batch_size):
+        self.b_size = batch_size
+
+
+    def evaluate(self, xs):
+        raise NotImplementedError
+
+    @staticmethod
+    def get_metric():
+        raise NotImplementedError
+
+    @staticmethod
+    def get_training_metric():
+        raise NotImplementedError
+
+
+
+class StochasticLanguage(Task):
+    def __init__(self, batch_size, state_number_min=4, state_number_max=12, alphabet_size_min = 4, alphabet_size_max = 18,
+                 edges_min = 1, edged_max=4, word_len_min=1, word_len_max=50):
+        '''State number corresponds to number of automota states
+            alphabet corrosponds to the number of letters in the sampled alphabet
+            edges corrosponds to how many '''
+        super(StochasticLanguage, self).__init__(batch_size)
+        self.state_number_min=state_number_min 
+        self.state_number_max=state_number_max 
+        self.alphabet_size_min =alphabet_size_min 
+        self.alphabet_size_max = alphabet_size_max
+        self.edges_min = edges_min 
+        self.edged_max=edged_max
+        self.word_len_min=word_len_min 
+        self.word_len_max=word_len_max
+    
+
+
+'''
 def squared_error(ys_pred, ys):
     return (ys - ys_pred).square()
 
@@ -533,3 +578,4 @@ class DecisionTree(Task):
     @staticmethod
     def get_training_metric():
         return mean_squared_error
+'''
