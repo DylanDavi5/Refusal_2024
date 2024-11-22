@@ -83,6 +83,7 @@ def train(model, args):
         data_sampler_args = {}
         task_sampler_args = {}
 
+        '''
         if "sparse" in args.training.task:
             task_sampler_args["valid_coords"] = curriculum.n_dims_truncated
         if num_training_examples is not None:
@@ -90,13 +91,14 @@ def train(model, args):
             seeds = sample_seeds(num_training_examples, bsize)
             data_sampler_args["seeds"] = seeds
             task_sampler_args["seeds"] = [s + 1 for s in seeds]
-
+        '''
         xs = data_sampler.sample_xs(
             curriculum.n_points,
             bsize,
             curriculum.n_dims_truncated,
             **data_sampler_args,
         )
+        
         task = task_sampler(**task_sampler_args)
         ys = task.evaluate(xs)
 

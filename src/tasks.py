@@ -7,7 +7,7 @@ import numpy as np
 from models import *
 
 
-
+sigmoid = torch.nn.Sigmoid()
 bce_loss = torch.nn.BCELoss()
 def cross_entropy(ys_pred, ys):
     output = sigmoid(ys_pred)
