@@ -2,7 +2,7 @@ import math
 import numpy as np
 import torch
 from pythomata import SimpleDFA
-
+from typing import Tuple
 
 
 class DFA:
